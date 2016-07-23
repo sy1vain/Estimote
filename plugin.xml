@@ -79,7 +79,7 @@
       <source-file src="src/android/EstimotePlugin.java" target-dir="src/com/estimote/sdk" />
       <source-file src="src/android/BluetoothError.java" target-dir="src/com/estimote/sdk" />
 
-      <source-file src="lib/android/EstimoteSDK/estimote-sdk-preview.jar" target-dir="libs" />
+      <source-file src="lib/android/EstimoteSDK/estimote-sdk.jar" target-dir="libs" />
 
   </platform>
 
