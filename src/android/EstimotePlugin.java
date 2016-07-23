@@ -15,10 +15,13 @@ import java.util.List;
 public class EstimotePlugin extends CordovaPlugin {
 
   private static final UUID ESTIMOTE_PROXIMITY_UUID = UUID.fromString("B9407F30-F5F8-466E-AFF9-25556B57FE6D");//UUID.fromString("B9407F30-F5F8-466E-AFF9-25556B57FE6D");//"B9407F30-F5F8-466E-AFF9-25556B57FE6D""23A01AF0-232A-4518-9C0E-323FB773F5EF";
-  //private static final String ESTIMOTE_PROXIMITY_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";//UUID.fromString("B9407F30-F5F8-466E-AFF9-25556B57FE6D");//"B9407F30-F5F8-466E-AFF9-25556B57FE6D""23A01AF0-232A-4518-9C0E-323FB773F5EF";    
+  //private static final String ESTIMOTE_PROXIMITY_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";//UUID.fromString("B9407F30-F5F8-466E-AFF9-25556B57FE6D");//"B9407F30-F5F8-466E-AFF9-25556B57FE6D""23A01AF0-232A-4518-9C0E-323FB773F5EF";
 
   private static final String ESTIMOTE_PLUGIN_PARAM_REGION = "region";
   private static final String ESTIMOTE_PLUGIN_PARAM_UUID = "uuid";
+
+  private static final String ESTIMOTE_PLUGIN_PARAM_SCAN_PERIOD = "scanPeriod";
+  private static final String ESTIMOTE_PLUGIN_PARAM_WAIT_TIME = "waitTime";
 
   private Region region;
 
@@ -62,7 +65,7 @@ public class EstimotePlugin extends CordovaPlugin {
       beaconManager = new BeaconManager(cordova.getActivity().getBaseContext());
  Log.d(LOG_TAG, "new Beacon manager created");
       beaconManager.setRangingListener(new BeaconManager.RangingListener() {
-           
+
         @Override
         public void onBeaconsDiscovered(Region region, final List<Beacon> beacons) {
           Log.d(LOG_TAG, "Ranged beacons: " + beacons);
@@ -111,6 +114,13 @@ public class EstimotePlugin extends CordovaPlugin {
           }
         }
       });
+
+      if(options.has(ESTIMOTE_PLUGIN_PARAM_SCAN_PERIOD) && options.has(ESTIMOTE_PLUGIN_PARAM_WAIT_TIME)){
+        Log.d(LOG_TAG, "setting intervals");
+        long scanPeriod = options.getLong(ESTIMOTE_PLUGIN_PARAM_SCAN_PERIOD);
+        long waitTime = options.getLong(ESTIMOTE_PLUGIN_PARAM_WAIT_TIME);
+        beaconManager.setForegroundScanPeriod(scanPeriod, waitTime);
+      }
 
       beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
         @Override
