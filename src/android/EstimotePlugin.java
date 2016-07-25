@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.PluginResult;
+import com.estimote.sdk.SystemRequirementsChecker;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,13 +58,19 @@ public class EstimotePlugin extends CordovaPlugin {
         //null,
         null,
         null);
+    
+   
+        
+      
 
     Log.d(LOG_TAG, "startRanging-method called: "+region.getProximityUUID().toString());
 
     rangingCallback = callbackCtx;
     try {
       beaconManager = new BeaconManager(cordova.getActivity().getBaseContext());
- Log.d(LOG_TAG, "new Beacon manager created");
+        
+      Log.d(LOG_TAG, "new Beacon manager created");
+      
       beaconManager.setRangingListener(new BeaconManager.RangingListener() {
 
         @Override
@@ -122,17 +129,20 @@ public class EstimotePlugin extends CordovaPlugin {
         beaconManager.setForegroundScanPeriod(scanPeriod, waitTime);
       }
 
-      beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
-        @Override
-        public void onServiceReady() {
-          try {
-            beaconManager.startRanging(region);
-          } catch (Throwable e) {
-            Log.e(LOG_TAG, "Cannot start ranging", e);
-            EstimotePlugin.this.error(callbackCtx, "Cannot start ranging::" + e.getMessage(), BluetoothError.ERR_UNKNOWN);
+       
+      if (SystemRequirementsChecker.checkWithDefaultDialogs(this)) {
+        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+          @Override
+          public void onServiceReady() {
+            try {
+              beaconManager.startRanging(region);
+            } catch (Throwable e) {
+              Log.e(LOG_TAG, "Cannot start ranging", e);
+              EstimotePlugin.this.error(callbackCtx, "Cannot start ranging::" + e.getMessage(), BluetoothError.ERR_UNKNOWN);
+            }
           }
-        }
-      });
+        });
+      }
     } catch (Exception e) {
       this.error(callbackCtx, "Outer exception handler. " + e.getMessage(), BluetoothError.ERR_UNKNOWN);
     }
