@@ -130,7 +130,7 @@ public class EstimotePlugin extends CordovaPlugin {
       }
 
        
-      if (SystemRequirementsChecker.checkWithDefaultDialogs(this)) {
+      if (SystemRequirementsChecker.checkWithDefaultDialogs(cordova.getActivity())) {
         beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
           @Override
           public void onServiceReady() {
